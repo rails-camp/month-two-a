@@ -10,7 +10,7 @@ describe 'user login' do
 
     click_on 'Sign up'
 
-    expect(page).to have_current_path(static_home_path)
+    expect(page).to have_current_path(root_path)
   end
 
   it 'allows a user to login' do
@@ -20,20 +20,19 @@ describe 'user login' do
     fill_in 'user[email]', with: 'test2@test.com'
     fill_in 'user[password]', with: 'password'
 
-    click_on 'Sign in'
+    click_on 'Log in'
 
-    expect(page).to have_current_path(static_home_path)
+    expect(page).to have_current_path(root_path)
   end
 
-  it 'allows a user to sign out via a link in a bootstrap drop down menu item', js: true do
+  it 'allows a user to sign out via a link in a bootstrap drop down menu item' do
     user = User.create(email: 'test3@test.com', password: 'password', password_confirmation: 'password')
-    login_at(user, :scope => :user)
+    login_as(user, :scope => :user)
 
-    visit static_home_path
+    visit root_path
 
-    click_link "Welcome #{current_user.first_name} #{current_user.last_name}"
-    click_link 'sub link'
+    page.find(:xpath, "//a[@href='/users/sign_out']").click
 
-    expect(page).to have_content("signed out")
+    expect(page).to have_content("Signed out")
   end
 end
